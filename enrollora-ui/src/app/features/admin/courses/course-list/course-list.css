@@ -490,3 +490,225 @@
     padding: 18px;
   }
 }
+/* Course Modal */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(25, 20, 40, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.course-modal {
+  background: white;
+  width: 100%;
+  max-width: 520px;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 25px;
+}
+
+.modal-header h2 {
+  margin: 0 0 7px;
+  color: #302942;
+  font-size: 21px;
+}
+
+.modal-header p {
+  margin: 0;
+  color: #9892a5;
+  font-size: 13px;
+}
+
+.btn-close {
+  border: none;
+  background: none;
+  font-size: 25px;
+  cursor: pointer;
+  color: #777;
+}
+
+.form-group {
+  margin-bottom: 18px;
+  width: 100%;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #514963;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.form-group input:not([type='checkbox']) {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid #e5e0ed;
+  border-radius: 8px;
+  outline: none;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  border-color: #8b5cf6;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.btn-cancel,
+.btn-save {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background: #f1eef5;
+  color: #625b70;
+}
+
+.btn-save {
+  background: #8b5cf6;
+  color: white;
+}
+
+.btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 500px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+.btn-edit {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #eee7ff;
+  color: #7541d8;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-edit:hover {
+  background: #ded0ff;
+}
+/* Deactivate Button */
+
+.btn-deactivate {
+  padding: 7px 13px;
+  border: none;
+  border-radius: 6px;
+  background: #fee2e2;
+  color: #dc2626;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-deactivate:hover {
+  background: #fecaca;
+}
+
+.btn-deactivate:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.already-inactive {
+  color: #999;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Confirmation Modal */
+
+.confirmation-modal {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  padding: 28px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.confirmation-icon {
+  font-size: 35px;
+  margin-bottom: 12px;
+}
+
+.confirmation-modal h2 {
+  color: #302942;
+  margin-bottom: 12px;
+}
+
+.confirmation-modal p {
+  color: #716b7c;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.confirmation-modal .warning-text {
+  background: #fff7ed;
+  color: #c2410c;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.btn-confirm-deactivate {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #dc2626;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-confirm-deactivate:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.course-table {
+  min-width: 1100px;
+}
