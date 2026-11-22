@@ -4,10 +4,13 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 
-import { StudentFilter, StudentResponse } from './student.models';
+import { StudentFilter, StudentResponse, UpdateStudentRequest, UpdateMyProfileRequest, } from './student.models';
 import { PagedResult } from '../../../shared/models/paged-result.model';
 import { ApiMessage } from '../../../core/auth/auth.models';
-import { UpdateStudentRequest } from './student.models';
+
+
+
+
 
 @Injectable({
   providedIn: 'root',
@@ -67,4 +70,18 @@ export class StudentService {
   deleteStudent(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+  // Get logged-in student's profile
+getMyProfile(): Observable<StudentResponse> {
+  return this.http.get<StudentResponse>(`${this.apiUrl}/me`);
+}
+
+// Update logged-in student's profile
+updateMyProfile(
+  profileData: UpdateMyProfileRequest,
+): Observable<StudentResponse> {
+  return this.http.put<StudentResponse>(
+    `${this.apiUrl}/me`,
+    profileData,
+  );
+}
 }
