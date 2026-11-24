@@ -1,0 +1,208 @@
+
+<div class="cancellation-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">MY LEARNING</span>
+      <h1>Cancellation Requests</h1>
+      <p>Submit and track your course cancellation requests.</p>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="state-card">
+      <div class="loader"></div>
+      <p>Loading your cancellation requests...</p>
+    </div>
+  } @else {
+
+    <!-- Success Message -->
+    @if (successMessage()) {
+      <div class="alert success-alert">
+        <span>✓</span>
+        {{ successMessage() }}
+      </div>
+    }
+
+    <!-- Error Message -->
+    @if (errorMessage()) {
+      <div class="alert error-alert">
+        <span>⚠</span>
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <!-- New Cancellation Request -->
+    <div class="form-card">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">NEW REQUEST</span>
+          <h2>Request Course Cancellation</h2>
+          <p>Select an active enrollment and provide your reason.</p>
+        </div>
+      </div>
+
+      @if (eligibleEnrollments().length === 0) {
+        <div class="empty-message">
+          <span>ℹ</span>
+          <div>
+            <strong>No eligible enrollments</strong>
+            <p>
+              You currently have no active enrollments available for
+              cancellation requests, or all active enrollments already
+              have pending requests.
+            </p>
+          </div>
+        </div>
+      } @else {
+        <form (ngSubmit)="submitRequest()">
+
+          <div class="form-group">
+            <label for="enrollment">Select Enrollment</label>
+
+            <select
+              id="enrollment"
+              name="enrollmentId"
+              [ngModel]="selectedEnrollmentId()"
+              (ngModelChange)="selectedEnrollmentId.set($event ? +$event : null)"
+              required
+            >
+              <option [ngValue]="null">Choose a course</option>
+
+              @for (
+                enrollment of eligibleEnrollments();
+                track enrollment.enrollmentId
+              ) {
+                <option [ngValue]="enrollment.enrollmentId">
+                  {{ enrollment.courseName }}
+                  - Enrollment #{{ enrollment.enrollmentId }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="reason">Reason for Cancellation</label>
+
+            <textarea
+              id="reason"
+              name="reason"
+              rows="5"
+              maxlength="1000"
+              placeholder="Please explain why you want to cancel this enrollment..."
+              [ngModel]="reason()"
+              (ngModelChange)="reason.set($event)"
+              required
+            ></textarea>
+
+            <small>{{ reason().length }} / 1000 characters</small>
+          </div>
+
+          <button
+            type="submit"
+            class="submit-btn"
+            [disabled]="isSubmitting()"
+          >
+            @if (isSubmitting()) {
+              Submitting...
+            } @else {
+              Submit Cancellation Request
+            }
+          </button>
+
+        </form>
+      }
+    </div>
+
+    <!-- Cancellation Request History -->
+    <div class="history-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">REQUEST HISTORY</span>
+          <h2>My Cancellation Requests</h2>
+          <p>Track the status of your submitted requests.</p>
+        </div>
+      </div>
+
+      @if (cancellationRequests().length === 0) {
+        <div class="state-card">
+          <span class="empty-icon">📋</span>
+          <h3>No cancellation requests yet</h3>
+          <p>Your submitted cancellation requests will appear here.</p>
+        </div>
+      } @else {
+        <div class="table-card">
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Reason</th>
+                  <th>Requested Date</th>
+                  <th>Status</th>
+                  <th>Reviewed Date</th>
+                  <th>Admin Remarks</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for (
+                  request of cancellationRequests();
+                  track request.cancellationRequestId
+                ) {
+                  <tr>
+                    <td>
+                      <div class="course-info">
+                        <div class="course-avatar">
+                          {{ request.courseName.charAt(0).toUpperCase() }}
+                        </div>
+
+                        <div>
+                          <strong>{{ request.courseName }}</strong>
+                          <small>
+                            Request #{{ request.cancellationRequestId }}
+                          </small>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td class="reason-cell">{{ request.reason }}</td>
+
+                    <td>
+                      {{ request.requestedAt | date: 'dd MMM yyyy' }}
+                    </td>
+
+                    <td>
+                      <span
+                        class="status-badge"
+                        [class.pending]="request.status === 0"
+                        [class.approved]="request.status === 1"
+                        [class.rejected]="request.status === 2"
+                      >
+                        {{ statusLabel(request.status) }}
+                      </span>
+                    </td>
+
+                    <td>
+                      @if (request.reviewedAt) {
+                        {{ request.reviewedAt | date: 'dd MMM yyyy' }}
+                      } @else {
+                        —
+                      }
+                    </td>
+
+                    <td>
+                      {{ request.adminRemarks || '—' }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+
+  }
+</div>
