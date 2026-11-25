@@ -10,6 +10,7 @@ import {
   CancellationFilter,
   CancellationResponse,
   CreateCancellationRequest,
+  ReviewCancellationRequest,
 } from './cancellation-request.model';
 
 @Injectable({
@@ -21,6 +22,7 @@ export class CancellationRequestService {
   private readonly apiUrl =
     `${environment.apiUrl}/cancellation-requests`;
 
+  // Student: Get my cancellation requests
   getMyCancellationRequests(
     pageNumber = 1,
     pageSize = 10,
@@ -34,12 +36,49 @@ export class CancellationRequestService {
     );
   }
 
+  // Student: Create cancellation request
   createCancellationRequest(
     enrollmentId: number,
     request: CreateCancellationRequest,
   ): Observable<CancellationResponse> {
     return this.http.post<CancellationResponse>(
       `${environment.apiUrl}/enrollments/${enrollmentId}/cancellation-request`,
+      request,
+    );
+  }
+
+  // Admin: Get all cancellation requests
+  getCancellationRequests(
+    pageNumber = 1,
+    pageSize = 10,
+    filters?: CancellationFilter,
+  ): Observable<PagedResult<CancellationResponse>> {
+    return this.http.get<PagedResult<CancellationResponse>>(
+      this.apiUrl,
+      {
+        params: this.buildParams(pageNumber, pageSize, filters),
+      },
+    );
+  }
+
+  // Admin: Approve cancellation request
+  approveCancellationRequest(
+    requestId: number,
+    request: ReviewCancellationRequest,
+  ): Observable<CancellationResponse> {
+    return this.http.put<CancellationResponse>(
+      `${this.apiUrl}/${requestId}/approve`,
+      request,
+    );
+  }
+
+  // Admin: Reject cancellation request
+  rejectCancellationRequest(
+    requestId: number,
+    request: ReviewCancellationRequest,
+  ): Observable<CancellationResponse> {
+    return this.http.put<CancellationResponse>(
+      `${this.apiUrl}/${requestId}/reject`,
       request,
     );
   }

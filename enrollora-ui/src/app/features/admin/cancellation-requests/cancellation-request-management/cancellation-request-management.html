@@ -1,0 +1,230 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>Cancellation Requests</h1>
+      <p>Review student cancellation requests and view their history.</p>
+    </div>
+  </div>
+
+  @if (successMessage()) {
+    <div class="alert success">{{ successMessage() }}</div>
+  }
+
+  @if (errorMessage()) {
+    <div class="alert error">{{ errorMessage() }}</div>
+  }
+
+  <section class="filter-card">
+    <div class="filter-group">
+      <label for="search">Search Student</label>
+      <input
+        id="search"
+        type="text"
+        placeholder="Enter student name or email"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+        (keyup.enter)="applyFilters()"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label for="status">Request Status</label>
+      <select
+        id="status"
+        [ngModel]="statusFilter()"
+        (ngModelChange)="statusFilter.set($event)"
+      >
+        <option value="">All Statuses</option>
+        <option value="0">Pending</option>
+        <option value="1">Approved</option>
+        <option value="2">Rejected</option>
+      </select>
+    </div>
+
+    <div class="filter-actions">
+      <button class="primary-btn" type="button" (click)="applyFilters()">
+        Search
+      </button>
+      <button class="secondary-btn" type="button" (click)="clearFilters()">
+        Clear
+      </button>
+    </div>
+  </section>
+
+  @if (selectedRequest(); as request) {
+    <section class="review-card">
+      <div class="review-header">
+        <div>
+          <h2>
+            {{ selectedDecision() === 'approve' ? 'Approve Request' : 'Reject Request' }}
+          </h2>
+          <p>{{ request.studentName }} — {{ request.courseName }}</p>
+        </div>
+        <button class="close-btn" type="button" (click)="cancelReview()">
+          ×
+        </button>
+      </div>
+
+      <div class="request-reason">
+        <strong>Student's Reason</strong>
+        <p>{{ request.reason }}</p>
+      </div>
+
+      <div class="filter-group">
+        <label for="remarks">Admin Remarks (optional)</label>
+        <textarea
+          id="remarks"
+          rows="3"
+          maxlength="1000"
+          placeholder="Enter remarks for the student..."
+          [ngModel]="adminRemarks()"
+          (ngModelChange)="adminRemarks.set($event)"
+        ></textarea>
+      </div>
+
+      <div class="review-actions">
+        <button
+          type="button"
+          class="primary-btn"
+          [disabled]="isReviewing()"
+          (click)="submitReview()"
+        >
+          @if (isReviewing()) {
+            Processing...
+          } @else {
+            Confirm {{ selectedDecision() === 'approve' ? 'Approval' : 'Rejection' }}
+          }
+        </button>
+
+        <button
+          type="button"
+          class="secondary-btn"
+          [disabled]="isReviewing()"
+          (click)="cancelReview()"
+        >
+          Cancel
+        </button>
+      </div>
+    </section>
+  }
+
+  <section class="table-card">
+    <div class="table-header">
+      <div>
+        <h2>Cancellation History</h2>
+        <p>All student cancellation requests and their review status.</p>
+      </div>
+      <span class="record-count">{{ totalRecords() }} records</span>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading">Loading cancellation requests...</div>
+    } @else if (requests().length === 0) {
+      <div class="empty-state">
+        <h3>No cancellation requests found</h3>
+        <p>There are no requests matching your filters.</p>
+      </div>
+    } @else {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Course</th>
+              <th>Reason</th>
+              <th>Requested At</th>
+              <th>Status</th>
+              <th>Reviewed At</th>
+              <th>Admin Remarks</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (request of requests(); track request.cancellationRequestId) {
+              <tr>
+                <td>
+                  <strong>{{ request.studentName }}</strong>
+                  <small>{{ request.studentEmail }}</small>
+                </td>
+
+                <td>{{ request.courseName }}</td>
+
+                <td class="reason-cell">{{ request.reason }}</td>
+
+                <td>{{ request.requestedAt | date: 'mediumDate' }}</td>
+
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.pending]="request.status === CancellationStatus.Pending"
+                    [class.approved]="request.status === CancellationStatus.Approved"
+                    [class.rejected]="request.status === CancellationStatus.Rejected"
+                  >
+                    {{ statusLabel(request.status) }}
+                  </span>
+                </td>
+
+                <td>
+                  {{ request.reviewedAt ? (request.reviewedAt | date: 'mediumDate') : '—' }}
+                </td>
+
+                <td>{{ request.adminRemarks || '—' }}</td>
+
+                <td>
+                  @if (request.status === CancellationStatus.Pending) {
+                    <div class="action-buttons">
+                      <button
+                        type="button"
+                        class="approve-btn"
+                        (click)="openReview(request, 'approve')"
+                      >
+                        Approve
+                      </button>
+
+                      <button
+                        type="button"
+                        class="reject-btn"
+                        (click)="openReview(request, 'reject')"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  } @else {
+                    <span class="completed-text">Reviewed</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination">
+        <span>
+          Page {{ pageNumber() }} of {{ totalPages() }}
+        </span>
+
+        <div class="pagination-actions">
+          <button
+            type="button"
+            class="secondary-btn"
+            [disabled]="pageNumber() <= 1"
+            (click)="changePage(pageNumber() - 1)"
+          >
+            Previous
+          </button>
+
+          <button
+            type="button"
+            class="secondary-btn"
+            [disabled]="pageNumber() >= totalPages()"
+            (click)="changePage(pageNumber() + 1)"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    }
+  </section>
+</div>

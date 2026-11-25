@@ -44,6 +44,13 @@ export const routes: Routes = [
             (m) => m.EnrollmentListComponent,
           ),
       },
+      {
+        path: 'cancellation-requests',
+        loadComponent: () =>
+          import(
+            './features/admin/cancellation-requests/cancellation-request-management/cancellation-request-management'
+          ).then((m) => m.CancellationRequestManagement),
+      },
     ],
   },
   {
@@ -73,19 +80,19 @@ export const routes: Routes = [
           ),
       },
       {
-  path: 'profile',
-  loadComponent: () =>
-    import('./features/student/profile/student-profile').then(
-      (m) => m.StudentProfile,
-    ),
-},
-{
-  path: 'cancellation-requests',
-  loadComponent: () =>
-    import(
-      './features/student/cancellation-requests/cancellation-request-list/cancellation-request-list'
-    ).then((m) => m.CancellationRequestList),
-},
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/student/profile/student-profile').then(
+            (m) => m.StudentProfile,
+          ),
+      },
+      {
+        path: 'cancellation-requests',
+        loadComponent: () =>
+          import(
+            './features/student/cancellation-requests/cancellation-request-list/cancellation-request-list'
+          ).then((m) => m.CancellationRequestList),
+      },
       {
         path: '',
         redirectTo: 'courses',
